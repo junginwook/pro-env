@@ -88,55 +88,56 @@ pipeline {
         }
         stage("Upload To S3") {
             steps {
-                def script = """
-                        #!/bin/bash
-                        ORIGIN_JAR_PATH='/var/jenkins_home/batch/deploy/*.jar'
-                        ORIGIN_JAR_NAME=\$(basename ${ORIGIN_JAR_PATH})
-                        TARGET_PATH='/home/jenkins_home/batch/application.jar'
-                        JAR_BOX_PATH='/home/jenkins_home/batch/jar/'
-                        
-                        echo "  > 배포 JAR: "${ORIGIN_JAR_NAME}
-                        
-                        echo "  > chmod 770 ${ORIGIN_JAR_PATH}"
-                        sudo chmod 770 ${ORIGIN_JAR_PATH}
-                        
-                        echo "  > cp ${ORIGIN_JAR_PATH} ${JAR_BOX_PATH}"
-                        sudo cp ${ORIGIN_JAR_PATH} ${JAR_BOX_PATH}
-                        
-                        echo "  > chown -h jenkins:jenkins ${JAR_BOX_PATH}${ORIGIN_JAR_NAME}"
-                        sudo chown -h jenkins:jenkins ${JAR_BOX_PATH}${ORIGIN_JAR_NAME}
-                        
-                        echo "  > sudo ln -s -f ${JAR_BOX_PATH}${ORIGIN_JAR_NAME} ${TARGET_PATH}"
-                        sudo ln -s -f ${JAR_BOX_PATH}${ORIGIN_JAR_NAME} ${TARGET_PATH}
-                        """.stripIndent()
-                writeFile(file: 'deploy/deploy.sh', text: script)
+                try {
+                    def script = """
+                    #!/bin/bash
+                    ORIGIN_JAR_PATH='/var/jenkins_home/batch/deploy/*.jar'
+                    ORIGIN_JAR_NAME=\$(basename ${ORIGIN_JAR_PATH})
+                    TARGET_PATH='/home/jenkins_home/batch/application.jar'
+                    JAR_BOX_PATH='/home/jenkins_home/batch/jar/'
+                    
+                    echo "  > 배포 JAR: "${ORIGIN_JAR_NAME}
+                    
+                    echo "  > chmod 770 ${ORIGIN_JAR_PATH}"
+                    sudo chmod 770 ${ORIGIN_JAR_PATH}
+                    
+                    echo "  > cp ${ORIGIN_JAR_PATH} ${JAR_BOX_PATH}"
+                    sudo cp ${ORIGIN_JAR_PATH} ${JAR_BOX_PATH}
+                    
+                    echo "  > chown -h jenkins:jenkins ${JAR_BOX_PATH}${ORIGIN_JAR_NAME}"
+                    sudo chown -h jenkins:jenkins ${JAR_BOX_PATH}${ORIGIN_JAR_NAME}
+                    
+                    echo "  > sudo ln -s -f ${JAR_BOX_PATH}${ORIGIN_JAR_NAME} ${TARGET_PATH}"
+                    sudo ln -s -f ${JAR_BOX_PATH}${ORIGIN_JAR_NAME} ${TARGET_PATH}
+                    """.stripIndent()
+                        writeFile(file: 'deploy/deploy.sh', text: script)
 
-                sh """
-                        cd deploy
-                        cat>appspec.yml<<-EOF
-                        version: 0.0
-                        os: linux
-                        files:
-                          - source:  /
-                            destination: /home/jenkins_home/batch/deploy
-                        
-                        permissions:
-                          - object: /
-                            pattern: "**"
-                            owner: root
-                            group: root
-                        
-                        hooks:
-                          ApplicationStart:
-                            - location: deploy.sh
-                              timeout: 60
-                              runas: root
-                        """.stripIndent()
+                        sh """
+                            cd deploy
+                            cat>appspec.yml<<-EOF
+                            version: 0.0
+                            os: linux
+                            files:
+                              - source:  /
+                                destination: /home/jenkins_home/batch/deploy
+                            
+                            permissions:
+                              - object: /
+                                pattern: "**"
+                                owner: root
+                                group: root
+                            
+                            hooks:
+                              ApplicationStart:
+                                - location: deploy.sh
+                                  timeout: 60
+                                  runas: root
+                            """.stripIndent()
 
-                sh """
-                        cd deploy
-                        zip -r deploy *
-                        """
+                        sh """
+                            cd deploy
+                            zip -r deploy *
+                            """
 
 
 //                withAWS(credentials: "AWS_CREDENTIAL") {
@@ -146,6 +147,12 @@ pipeline {
 //                            bucket: "inwook-beanstalk-deploy"
 //                    )
 //                }
+                }
+                catch (error) {
+                    print(error)
+                    sh("sudo rm -rf /var/lib/jenkins/workspace/${env.JOB_NAME}/*")
+                    currentBuild.result = "FAILURE"
+                }
             }
         }
         stage("Deploy") {
