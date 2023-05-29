@@ -164,7 +164,7 @@ pipeline {
                         withAWS(credentials: "aws-key") {
                             createDeployment(
                                     s3Bucket: 'batch-repo',
-                                    s3Key: ${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip,
+                                    s3Key: "${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip",
                                     s3BundleType: 'zip', // [Valid values: tar | tgz | zip | YAML | JSON]
                                     applicationName: 'inwook-deploy',
                                     deploymentGroupName: 'inwook-deploy-group',
@@ -175,16 +175,16 @@ pipeline {
                                     ignoreApplicationStopFailures: 'false',
                                     fileExistsBehavior: 'OVERWRITE'// [Valid values: DISALLOW, OVERWRITE, RETAIN]
                             )
-//                            sh """
-//                                aws deploy create-deployment \
-//                                --application-name inwook-deploy \
-//                                --deployment-group-name inwook-deploy-group \
-//                                --region ap-northeast-2 \
-//                                --s3-location bucket=batch-repo,key=${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip,bundleType=zip \
-//                                --file-exists-behavior OVERWRITE \
-//                                --output json > DEPLOYMENT_ID.json
-//                                cat DEPLOYMENT_ID.json
-//                            """
+                            sh """
+                                aws deploy create-deployment \
+                                --application-name inwook-deploy \
+                                --deployment-group-name inwook-deploy-group \
+                                --region ap-northeast-2 \
+                                --s3-location bucket=batch-repo,key=${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip,bundleType=zip \
+                                --file-exists-behavior OVERWRITE \
+                                --output json > DEPLOYMENT_ID.json
+                                cat DEPLOYMENT_ID.json
+                            """
                         }
 
                         def DEPLOYMENT_ID = readJSON file: './DEPLOYMENT_ID.json'
