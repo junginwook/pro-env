@@ -51,7 +51,6 @@ pipeline {
             }
             post {
                 failure {
-                    currentBuild.result = "FAILURE"
                     echo "Git clone stage failed"
                 }
                 success {
