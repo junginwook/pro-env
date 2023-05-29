@@ -165,9 +165,9 @@ pipeline {
                             createDeployment(
                                     s3Bucket: 'batch-repo',
                                     s3Key: "${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip",
-                                    s3BundleType: 'zip', // [Valid values: tar | tgz | zip | YAML | JSON]
-                                    applicationName: 'inwook-deploy',
-                                    deploymentGroupName: 'inwook-deploy-group',
+                                    s3BundleType: 'zip', 
+                                    applicationName: 'batch-deploy',
+                                    deploymentGroupName: 'batch-deploy-group',
                                     deploymentConfigName: 'CodeDeployDefault.AllAtOnce',
                                     description: 'Batch deploy',
                                     waitForCompletion: 'true',
