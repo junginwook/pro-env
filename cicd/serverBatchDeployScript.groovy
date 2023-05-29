@@ -141,13 +141,13 @@ pipeline {
                                 """
 
 
-//                        withAWS(credentials: "AWS_CREDENTIAL") {
-//                            s3Upload(
-//                                    path: "${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip",
-//                                    file: "/var/lib/jenkins/workspace/${env.JOB_NAME}/deploy/deploy.zip",
-//                                    bucket: "inwook-beanstalk-deploy"
-//                            )
-//                        }
+                        withAWS(credentials: "aws-key") {
+                            s3Upload(
+                                    path: "${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip",
+                                    file: "/var/jenkins_home/workspace/${env.JOB_NAME}/deploy/deploy.zip",
+                                    bucket: "batch-repo"
+                            )
+                        }
                     }
                     catch (error) {
                         print(error)
