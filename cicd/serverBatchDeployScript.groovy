@@ -120,7 +120,7 @@ pipeline {
                                 os: linux
                                 files:
                                   - source:  /
-                                    destination: /home/jenkins/batch/deploy
+                                    destination: /home
                                 
                                 permissions:
                                   - object: /
@@ -165,7 +165,7 @@ pipeline {
                             createDeployment(
                                     s3Bucket: 'batch-repo',
                                     s3Key: "${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip",
-                                    s3BundleType: 'zip', 
+                                    s3BundleType: 'zip',
                                     applicationName: 'batch-deploy',
                                     deploymentGroupName: 'batch-deploy-group',
                                     deploymentConfigName: 'CodeDeployDefault.AllAtOnce',
