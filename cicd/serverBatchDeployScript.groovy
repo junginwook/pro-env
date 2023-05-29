@@ -87,13 +87,19 @@ pipeline {
             }
         }
         stage("Upload To S3") {
-            echo "upload"
+            steps {
+                echo "upload"
+            }
         }
         stage("Deploy") {
-            echo "deploy"
+            steps {
+                echo "deploy"
+            }
         }
         stage("Clean Up") {
-            echo "clean up"
+            steps {
+                echo "clean up"
+            }
         }
     }
 }
