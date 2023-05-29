@@ -38,19 +38,62 @@ pipeline {
             }
         }
         stage("Cloning Git") {
-
+            steps {
+                script {
+                    try {
+                        git url: GIT_DISTRIBUTE_URL, branch: GIT_DISTRIBUTE_BRANCH, credentialsId: "ssh-key"
+                    }
+                    catch (error) {
+                        print(error)
+                        currentBuild.result = "FAILURE"
+                    }
+                }
+            }
+            post {
+                failure {
+                    echo "Git clone stage failed"
+                }
+                success {
+                    echo "Git clone stage success"
+                }
+            }
         }
         stage("Building Jar") {
+            steps {
+                script {
+                    try {
+                        sh("rm -rf deploy")
+                        sh("mkdir deploy")
 
+                        sh("gradle :${SERVICE}:clean :${SERVICE}:build -x test")
+
+                        sh("cd deploy")
+                        sh("cp /var/jenkins_home/workspace/${env.JOB_NAME}/${SERVICE}/build/libs/*.jar ./deploy/${SERVICE}.jar")
+                    }
+                    catch (error) {
+                        print(error)
+                        sh("sudo rm -rf /var/lib/jenkins/workspace/${env.JOB_NAME}/*")
+                        currentBuild.result = "FAILURE"
+                    }
+                }
+            }
+            post {
+                failure {
+                    echo "Build jar stage failed"
+                }
+                success {
+                    echo "Build jar stage success"
+                }
+            }
         }
         stage("Upload To S3") {
-
+            echo "upload"
         }
         stage("Deploy") {
-
+            echo "deploy"
         }
         stage("Clean Up") {
-
+            echo "clean up"
         }
     }
 }
