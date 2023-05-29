@@ -120,7 +120,7 @@ pipeline {
                                 os: linux
                                 files:
                                   - source:  /
-                                    destination: /home/jenkins_home/batch/deploy
+                                    destination: /home/jenkins/batch/deploy
                                 
                                 permissions:
                                   - object: /
@@ -175,23 +175,13 @@ pipeline {
                                     ignoreApplicationStopFailures: 'false',
                                     fileExistsBehavior: 'OVERWRITE'// [Valid values: DISALLOW, OVERWRITE, RETAIN]
                             )
-                            sh """
-                                aws deploy create-deployment \
-                                --application-name inwook-deploy \
-                                --deployment-group-name inwook-deploy-group \
-                                --region ap-northeast-2 \
-                                --s3-location bucket=batch-repo,key=${env.JOB_NAME}/${env.BUILD_NUMBER}/${env.JOB_NAME}.zip,bundleType=zip \
-                                --file-exists-behavior OVERWRITE \
-                                --output json > DEPLOYMENT_ID.json
-                                cat DEPLOYMENT_ID.json
-                            """
                         }
 
-                        def DEPLOYMENT_ID = readJSON file: './DEPLOYMENT_ID.json'
-                        echo"${DEPLOYMENT_ID.deploymentId}"
-                        sh("rm -rf ./DEPLOYMENT_ID.json")
-
-                        awaitDeploymentCompletion("${DEPLOYMENT_ID.deploymentId}")
+//                        def DEPLOYMENT_ID = readJSON file: './DEPLOYMENT_ID.json'
+//                        echo"${DEPLOYMENT_ID.deploymentId}"
+//                        sh("rm -rf ./DEPLOYMENT_ID.json")
+//
+//                        awaitDeploymentCompletion("${DEPLOYMENT_ID.deploymentId}")
                     }
                     catch (error) {
                         print(error)
