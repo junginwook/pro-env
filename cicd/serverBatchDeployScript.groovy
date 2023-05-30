@@ -95,7 +95,7 @@ pipeline {
                         ORIGIN_JAR_PATH='/home/ubuntu/jenkins/batch/deploy/*.jar'
                         ORIGIN_JAR_NAME=\$(basename \${ORIGIN_JAR_PATH})
                         TARGET_PATH='/home/ubuntu/jenkins/batch/application.jar'
-                        JAR_BOX_PATH='home/ubuntu/jenkins/batch/jar/'
+                        JAR_BOX_PATH='/home/ubuntu/jenkins/batch/jar/'
                         
                         echo "  > 배포 JAR: "\${ORIGIN_JAR_NAME}
                         
