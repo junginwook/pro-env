@@ -120,7 +120,7 @@ pipeline {
                                 os: linux
                                 files:
                                   - source:  /
-                                    destination: /home
+                                    destination: /home/jenkins/batch/deploy
                                 
                                 permissions:
                                   - object: /
