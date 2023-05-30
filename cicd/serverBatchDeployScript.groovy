@@ -99,8 +99,9 @@ pipeline {
                         
                         echo "  > 배포 JAR: "\${ORIGIN_JAR_NAME}
                         
-                        echo "  > chmod 770 \${ORIGIN_JAR_PATH}"
-                        sudo chmod 770 \${ORIGIN_JAR_PATH}
+                        echo "  > chmod 777 \${ORIGIN_JAR_PATH}"
+                        sudo chmod 777 \${ORIGIN_JAR_PATH}
+                        sudo chmod a+x \${ORIGIN_JAR_PATH}
                         
                         echo "  > cp \${ORIGIN_JAR_PATH} \${JAR_BOX_PATH}"
                         sudo cp \${ORIGIN_JAR_PATH} \${JAR_BOX_PATH}
