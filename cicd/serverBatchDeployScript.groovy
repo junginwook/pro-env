@@ -105,9 +105,6 @@ pipeline {
                         echo "  > cp \${ORIGIN_JAR_PATH} \${JAR_BOX_PATH}"
                         sudo cp \${ORIGIN_JAR_PATH} \${JAR_BOX_PATH}
                         
-                        echo "  > chown -h jenkins:jenkins \${JAR_BOX_PATH}\${ORIGIN_JAR_NAME}"
-                        sudo chown -h jenkins:jenkins \${JAR_BOX_PATH}\${ORIGIN_JAR_NAME}
-                        
                         echo "  > sudo ln -s -f \${JAR_BOX_PATH}\${ORIGIN_JAR_NAME} \${TARGET_PATH}"
                         sudo ln -s -f \${JAR_BOX_PATH}\${ORIGIN_JAR_NAME} \${TARGET_PATH}
                         """.stripIndent()
