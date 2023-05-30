@@ -92,10 +92,10 @@ pipeline {
                     try {
                         def script = """
                         #!/bin/bash
-                        ORIGIN_JAR_PATH='/home/jenkins/batch/deploy/*.jar'
+                        ORIGIN_JAR_PATH='/jenkins/batch/deploy/*.jar'
                         ORIGIN_JAR_NAME=\$(basename \${ORIGIN_JAR_PATH})
-                        TARGET_PATH='/home/jenkins/batch/application.jar'
-                        JAR_BOX_PATH='/home/jenkins/batch/jar/'
+                        TARGET_PATH='/jenkins/batch/application.jar'
+                        JAR_BOX_PATH='/jenkins/batch/jar/'
                         
                         echo "  > 배포 JAR: "\${ORIGIN_JAR_NAME}
                         
@@ -117,7 +117,7 @@ pipeline {
                                 os: linux
                                 files:
                                   - source:  /
-                                    destination: /home/jenkins/batch/deploy
+                                    destination: /jenkins/batch/deploy
                                 
                                 permissions:
                                   - object: /
