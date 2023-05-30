@@ -176,12 +176,6 @@ pipeline {
                                     fileExistsBehavior: 'OVERWRITE'// [Valid values: DISALLOW, OVERWRITE, RETAIN]
                             )
                         }
-
-                        def DEPLOYMENT_ID = readJSON file: './DEPLOYMENT_ID.json'
-                        echo"${DEPLOYMENT_ID.deploymentId}"
-                        sh("rm -rf ./DEPLOYMENT_ID.json")
-
-                        awaitDeploymentCompletion("${DEPLOYMENT_ID.deploymentId}")
                     }
                     catch (error) {
                         print(error)
