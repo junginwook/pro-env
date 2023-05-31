@@ -89,14 +89,7 @@ pipeline {
         }
         stage('Clean Up') {
             steps {
-                always {
-                    cleanWs(cleanWhenNotBuilt: false,
-                            deleteDirs: true,
-                            disableDeferredWipeout: true,
-                            notFailBuild: true,
-                            patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
-                                       [pattern: 'deploy', type: 'EXCLUDE']])
-                }
+                echo "Clean Up"
             }
         }
     }
