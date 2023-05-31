@@ -106,8 +106,8 @@ pipeline {
                         echo "  > cp \${ORIGIN_JAR_PATH} \${JAR_BOX_PATH}"
                         sudo cp \${ORIGIN_JAR_PATH} \${JAR_BOX_PATH}
                         
-                        echo "  > sudo ln -s -f \${JAR_BOX_PATH}\${ORIGIN_JAR_NAME} \${TARGET_PATH}"
-                        sudo ln -s -f \${JAR_BOX_PATH}\${ORIGIN_JAR_NAME} \${TARGET_PATH}
+                        echo "  > sudo ln -s -f ./jar/\${ORIGIN_JAR_NAME} application.jar"
+                        sudo ln -s -f ./jar/\${ORIGIN_JAR_NAME} application.jar
                         """.stripIndent()
                         writeFile(file: 'deploy/deploy.sh', text: script)
 
