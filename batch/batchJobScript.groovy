@@ -16,9 +16,7 @@ pipeline {
                     try {
                         sh """
                             cd /var/jenkins_home/batch
-                            java -jar ${env.ORIGIN_JAR} 
-                            --job.name ${JOB_NAME}
-                            version=${VERSION}
+                            java -jar ${env.ORIGIN_JAR} --job.name=${JOB_NAME} version=${VERSION}  
                         """.stripIndent()
                     } catch(error) {
                         print(error)
