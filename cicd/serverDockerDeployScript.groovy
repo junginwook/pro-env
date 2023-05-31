@@ -16,7 +16,7 @@ pipeline {
     }
     stages {
         stage('Preparing Job') {
-            steps{
+            steps {
                 script {
                     try {
                         GIT_DISTRIBUTE_BRANCH_MAP = ["dev" : "develop", "qa" : "release", "prod" : "main"]
@@ -56,7 +56,7 @@ pipeline {
             }
         }
         stage('Build codes by Gradle') {
-            steps{
+            steps {
                 sh("rm -rf deploy")
                 sh("mkdir deploy")
 
@@ -65,7 +65,7 @@ pipeline {
             }
         }
         stage('Building Docker Image by Jib & Push to Aws ECR repository') {
-            steps{
+            steps {
                 withAWS(region:"${REGION}", credentials:"aws-key") {
                     ecrLogin()
                     sh """
@@ -79,11 +79,23 @@ pipeline {
             }
         }
         stage('Deploy to AWS EC2 VM') {
-            steps{
+            steps {
                 sshagent(credentials : ["deploy-key"]) {
                     sh "ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_HOST} \
                      'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URL}/${REPOSITORY}; \
                       docker run -d -p 80:8080 -t ${ECR_URL}/${REPOSITORY}:${currentBuild.number};'"
+                }
+            }
+        }
+        stage('Clean Up') {
+            steps {
+                always {
+                    cleanWs(cleanWhenNotBuilt: false,
+                            deleteDirs: true,
+                            disableDeferredWipeout: true,
+                            notFailBuild: true,
+                            patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
+                                       [pattern: 'deploy', type: 'EXCLUDE']])
                 }
             }
         }
